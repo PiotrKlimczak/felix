@@ -266,9 +266,21 @@ class PojoSRBundle implements Bundle, BundleRevisions
     @Override
     public URL getResource(String name)
     {
-        // TODO: module - implement this based on the revision
-        URL result = m_classLoader.getResource(name);
-        return result;
+        try
+        {
+            // We need to take resource from JAR bundle instead of classloader, as classloader is shared
+            URL result = new URL(getLocation() + name);
+            if (result.openConnection().getContent() != null) // Checking if requested resource really exists
+            {
+                return result;
+            }
+        }
+        catch (IOException e)
+        {
+            //no-op as requested resource does not exists
+        }
+        return null;
+
     }
 
     @Override
