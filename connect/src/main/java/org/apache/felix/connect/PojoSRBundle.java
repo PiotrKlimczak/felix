@@ -789,11 +789,12 @@ class PojoSRBundle implements Bundle, BundleRevisions
         @Override
         public Collection<String> listResources(String path, String filePattern, int options)
         {
-            // TODO: this is wrong, we should return the resource names
             Collection<String> result = new ArrayList<String>();
             for (URL u : findEntries(path, filePattern, options))
             {
-                result.add(u.toString());
+                String file = u.getFile();
+                file = file.substring(file.indexOf("!/") + 2); // Rewriting JAR URL to be a path within JAR only
+                result.add(file);
             }
             return result;
         }
